@@ -1,5 +1,5 @@
 import streamlit as st
-st.image('inmac.png')
+# st.image('inmac.png')
 st.title("Add Engineer to DB")
 
 with st.form(key="form1"):
