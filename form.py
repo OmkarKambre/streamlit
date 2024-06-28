@@ -22,6 +22,6 @@ if submit:
         st.write(f"Name: {name}")
         st.write(f"Phone Number: {pno}")
         st.write(f"Email: {email}")
-        st.write(f"Field of Interest: {ml_interest, ai_interest}")
+        st.write(f"Field of Interest: {field}")
         st.write(f"Location: {location}")
         st.write(f"Domain: {domain}")
