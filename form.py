@@ -26,7 +26,7 @@ if submit:
             st.warning("Invalid name format. Please enter a name that only contains alphabets and spaces.")
         elif not pno.isdigit() or len(pno)!= 10 or not pno.startswith(("7", "8", "9")):
             st.warning("Invalid phone number. Phone number should be 10 digits, start with 7, 8, or 9, and only contain numbers.")
-        elif not re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email):
+        elif not re.match(r"^[a-zA-Z0-9_+\-.]+@[a-zA-Z]+\.[a-zA-Z]+$", email):
             st.warning("Invalid email format. Please enter a valid email address.")
         elif not re.match(r"^[a-zA-Z ]+$", location):
             st.warning("Invalid location format. Please enter a name that only contains alphabets and spaces.")
