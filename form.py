@@ -1,5 +1,6 @@
 import streamlit as st
 from supabase import create_client, Client
+import re
 
 st.title("Add Engineer to DB")
 
@@ -21,17 +22,22 @@ if submit:
     if not name or not pno or not email:
         st.warning("Please fill out the Name, Phone Number, and Email fields.")
     else:
-        data = {
-                "name": name,
-                "pno": pno,
-                "email": email,
-                "location": location,
-                "domain": domain,
-                "toggle_field": field
-            }
-        response = supabase.table("basic_form").insert([data]).execute()
-
-        if response:
-            st.success("Data inserted successfully.")
+        if len(pno)!= 10 or not pno.startswith(("7", "8", "9")):
+            st.warning("Invalid phone number. Phone number should be 10 digits and start with 7, 8, or 9.")
+        elif not re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email):
+            st.warning("Invalid email format. Please enter a valid email address.")
         else:
-            st.error("Failed to insert data. Please try again.")
+            data = {
+                    "name": name,
+                    "pno": pno,
+                    "email": email,
+                    "location": location,
+                    "domain": domain,
+                    "toggle_field": field
+                }
+            response = supabase.table("basic_form").insert([data]).execute()
+
+            if response:
+                st.success("Data inserted successfully.")
+            else:
+                st.error("Failed to insert data. Please try again.")
