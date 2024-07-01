@@ -22,8 +22,10 @@ if submit:
     if not name or not pno or not email:
         st.warning("Please fill out the Name, Phone Number, and Email fields.")
     else:
-        if len(pno)!= 10 or not pno.startswith(("7", "8", "9")):
-            st.warning("Invalid phone number. Phone number should be 10 digits and start with 7, 8, or 9.")
+        if not re.match(r"^[a-zA-Z ]+$", name):
+            st.warning("Invalid name format. Please enter a name that only contains alphabets and spaces.")
+        elif not pno.isdigit() or len(pno)!= 10 or not pno.startswith(("7", "8", "9")):
+            st.warning("Invalid phone number. Phone number should be 10 digits, start with 7, 8, or 9, and only contain numbers.")
         elif not re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email):
             st.warning("Invalid email format. Please enter a valid email address.")
         else:
