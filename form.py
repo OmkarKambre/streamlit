@@ -1,7 +1,4 @@
-from dotenv import load_dotenv
-load_dotenv()
 import streamlit as st
-import os
 from supabase import create_client, Client
 
 st.title("Add Engineer to DB")
