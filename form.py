@@ -31,7 +31,11 @@ if submit:
         elif not re.match(r"^[a-zA-Z ]+$", location):
             st.warning("Invalid location format. Please enter a name that only contains alphabets and spaces.")
         else:
-            data = {
+            existing_email = supabase.table("basic_form").select("email").eq("email", email).execute()
+            if existing_email.data:
+                st.warning("Email already exists in the database. Please use a different email address.")
+            else:
+                data = {
                     "name": name,
                     "pno": pno,
                     "email": email,
@@ -39,9 +43,9 @@ if submit:
                     "domain": domain,
                     "toggle_field": field
                 }
-            response = supabase.table("basic_form").insert([data]).execute()
+                response = supabase.table("basic_form").insert([data]).execute()
 
-            if response:
-                st.success("Data inserted successfully.")
-            else:
-                st.error("Failed to insert data. Please try again.")
+                if response:
+                    st.success("Data inserted successfully.")
+                else:
+                    st.error("Failed to insert data. Please try again.")
