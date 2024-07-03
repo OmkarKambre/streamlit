@@ -46,4 +46,4 @@ if st.button("Calculate"):
         intervals = calculate_time_intervals(start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d'), interval_type)
         st.write(f"Intervals of {interval_type} type:")
         for interval in intervals:
-            st.write(f"From {interval[0]} to {interval[1]}")
+            st.write(f"Start Date:  {interval[0]} || End Date:  {interval[1]}")
