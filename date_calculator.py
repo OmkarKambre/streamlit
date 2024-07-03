@@ -11,26 +11,45 @@ def calculate_time_intervals(start_date, end_date, interval_type):
         current_date = start_date
         while current_date <= end_date:
             next_month = (current_date.replace(day=1) + timedelta(days=32)).replace(day=1)
-            intervals.append((current_date.strftime('%Y-%m-%d'), (next_month - timedelta(days=1)).strftime('%Y-%m-%d')))
+            if next_month > end_date:
+                intervals.append((current_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d')))
+                break
+            else:
+                intervals.append((current_date.strftime('%Y-%m-%d'), (next_month - timedelta(days=1)).strftime('%Y-%m-%d')))
             current_date = next_month
 
     elif interval_type == 'quarterly':
         current_date = start_date
         while current_date <= end_date:
-            intervals.append((current_date.strftime('%Y-%m-%d'), (current_date + timedelta(days=90)).strftime('%Y-%m-%d')))
-            current_date = current_date + timedelta(days=90)
+            next_quarter = current_date + timedelta(days=90)
+            if next_quarter > end_date:
+                intervals.append((current_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d')))
+                break
+            else:
+                intervals.append((current_date.strftime('%Y-%m-%d'), (next_quarter - timedelta(days=1)).strftime('%Y-%m-%d')))
+            current_date = next_quarter
 
     elif interval_type == 'half_yearly':
         current_date = start_date
         while current_date <= end_date:
-            intervals.append((current_date.strftime('%Y-%m-%d'), (current_date + timedelta(days=180)).strftime('%Y-%m-%d')))
-            current_date = current_date + timedelta(days=180)
+            next_half_year = current_date + timedelta(days=180)
+            if next_half_year > end_date:
+                intervals.append((current_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d')))
+                break
+            else:
+                intervals.append((current_date.strftime('%Y-%m-%d'), (next_half_year - timedelta(days=1)).strftime('%Y-%m-%d')))
+            current_date = next_half_year
 
     elif interval_type == 'yearly':
         current_date = start_date
         while current_date <= end_date:
-            intervals.append((current_date.strftime('%Y-%m-%d'), (current_date + timedelta(days=365)).strftime('%Y-%m-%d')))
-            current_date = current_date + timedelta(days=365)
+            next_year = current_date + timedelta(days=365)
+            if next_year > end_date:
+                intervals.append((current_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d')))
+                break
+            else:
+                intervals.append((current_date.strftime('%Y-%m-%d'), (next_year - timedelta(days=1)).strftime('%Y-%m-%d')))
+            current_date = next_year
 
     return intervals
 
