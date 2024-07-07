@@ -1,13 +1,29 @@
 import streamlit as st
+from supabase import create_client, Client
 import pandas as pd
 import datetime as dt
-import os
-from supabase import create_client, Client
 
 supabase_url = 'https://udxcimusmbsraiwwgppa.supabase.co'
 supabase_key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkeGNpbXVzbWJzcmFpd3dncHBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTk4MTc4NTIsImV4cCI6MjAzNTM5Mzg1Mn0.S1r-ynq7pKrUFqY68VVtbcH52p1hrJMOnqYoYT3_JCM'
 conn = create_client(supabase_url, supabase_key)
 
+# def save_to_supabase(client_name, amcfms, invoice_type, total_amt, start_date, end_date, billing, note):
+#     start_date = supabase.storage.from_date(start_date)
+#     end_date = supabase.storage.from_date(end_date)
+#     supabase.table('invoices').insert(
+#         [
+#             {
+#                 'client_name': client_name,
+#                 'service': amcfms,
+#                 'type_service': invoice_type,
+#                 'total_amt': total_amt,
+#                 's_date': start_date,
+#                 'e_date': end_date,
+#                 'billing': billing,
+#                 'note': note,
+#             }
+#         ]
+#     )
     
 st.header("Save AMC")
 clientName = st.text_input("Client Name")
@@ -433,95 +449,77 @@ st.download_button(
 )
 
 if st.button("Save"):
-
-
     if billing == "Yearly":
         images1 = []
         if uploaded_file is not None:
             st.write(uploaded_file)
-            current_datetime = dt.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-            filename = f"images/{current_datetime}_{uploaded_file.name}"
-            os.makedirs(os.path.dirname(filename), exist_ok=True)
-            with open(filename, "wb") as f:
-                f.write(uploaded_file.getvalue())
-            conn.storage.from_("images").upload(filename, filename)
-            url = conn.storage.from_("images").public_url(filename)
-            images1.append(url)
-            st.write(uploaded_file.name.split('.')[-1])
-            # os.remove(filename)
+            filename = "images/"+str(dt.datetime.now())+uploaded_file.__getattribute__("name")
+            conn.upload("images", "local",uploaded_file , filename)
+            images1.append(filename)
+            st.write(uploaded_file.__getattribute__("name").split('.')[-1])
         
         data = {
             "client_name":[clientName],
             "service":[amcfms],
             "type_service":[type],
             "total_amount":[totalAmt],
-            "s_date":[start],
-            "e_date":[end],
+            "s_date":[start.strftime('%Y-%m-%d')],
+            "e_date":[end.strftime('%Y-%m-%d')],
+            "img_url":images1,
             "billing":[billing],
-            "note":[note],
-            "img_url" : [images1]
+            "note":[note]
         }
-        conn.from_("amc_form").insert(data).execute()
+        response = conn.table("amc_form").insert([data]).execute()
+        if response:
+            st.success("Data inserted successfully.")
+        else:
+            st.error("Failed to insert data. Please try again.")
         df=pd.DataFrame(data)
         st.dataframe(df)
-
-
     elif billing == "Half Yearly":
         images1 = []
         if uploaded_file is not None:
-            st.write(uploaded_file)
-            current_datetime = dt.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-            filename = f"images/{current_datetime}_{uploaded_file.name}"
-            os.makedirs(os.path.dirname(filename), exist_ok=True)
-            with open(filename, "wb") as f:
-                f.write(uploaded_file.getvalue())
-            conn.storage.from_("images").upload(filename, filename)
-            url = conn.storage.from_("images").public_url(filename)
-            images1.append(url)
-            st.write(uploaded_file.name.split('.')[-1])
-            # os.remove(filename)
-        
+                for i in uploaded_file:
+                    filename = "images/"+str(dt.datetime.now())+i.__getattribute__("name")
+                    conn.upload("images", "local",i , filename)
+                    images1.append(filename)
+                    st.write(i.__getattribute__("name").split('.')[-1])
         data = {
             "client_name":[clientName],
             "service":[amcfms],
             "type_service":[type],
             "total_amount":[totalAmt],
-            "s_date":[start],
-            "e_date":[end],
+            "s_date":[start.strftime('%Y-%m-%d')],
+            "e_date":[end.strftime('%Y-%m-%d')],
             "billing":[billing],
             "P1 Start":[start],
             "P1 End":[(pd.to_datetime(start)+pd.DateOffset(months=6)-pd.DateOffset(days=1)).date()],
             "P2 Start":[(pd.to_datetime(start)+pd.DateOffset(months=6)).date()],
             "P2 End":[end],
-            "note":[note],
-            "img_url" : [images1]
+            "note":[note]
         }
-        conn.from_("amc_form").insert(data).execute()
+        response = conn.table("amc_form").insert([data]).execute()
+        if response:
+            st.success("Data inserted successfully.")
+        else:
+            st.error("Failed to insert data. Please try again.")
         df=pd.DataFrame(data)
         st.dataframe(df)
-
-
     elif billing == "Quarterly":
         images1 = []
         if uploaded_file is not None:
-            st.write(uploaded_file)
-            current_datetime = dt.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-            filename = f"images/{current_datetime}_{uploaded_file.name}"
-            os.makedirs(os.path.dirname(filename), exist_ok=True)
-            with open(filename, "wb") as f:
-                f.write(uploaded_file.getvalue())
-            conn.storage.from_("images").upload(filename, filename)
-            url = conn.storage.from_("images").public_url(filename)
-            images1.append(url)
-            st.write(uploaded_file.name.split('.')[-1])
-            # os.remove(filename)
+                for i in uploaded_file:
+                    filename = "images/"+str(dt.datetime.now())+i.__getattribute__("name")
+                    conn.upload("images", "local",i , filename)
+                    images1.append(filename)
+                    st.write(i.__getattribute__("name").split('.')[-1])
         data = {
             "client_name":[clientName],
             "service":[amcfms],
             "type_service":[type],
             "total_amount":[totalAmt],
-            "s_date":[start],
-            "e_date":[end],
+           "s_date":[start.strftime('%Y-%m-%d')],
+            "e_date":[end.strftime('%Y-%m-%d')],
             "billing":[billing],
             "Q1 Start":[start],
             "Q1 End":[(pd.to_datetime(start)+pd.DateOffset(months=3)-pd.DateOffset(days=1)).date()],
@@ -531,36 +529,26 @@ if st.button("Save"):
             "Q3 End":[(pd.to_datetime(start)+pd.DateOffset(months=9)-pd.DateOffset(days=1)).date()],
             "Q4 Start":[(pd.to_datetime(start)+pd.DateOffset(months=9)+pd.DateOffset(days=1)).date()],
             "Q4 End":[(pd.to_datetime(start)+pd.DateOffset(months=12)-pd.DateOffset(days=1)).date()],
-            "note":[note],
-            "img_url" : [images1]
+            
+            "note":[note]
         }
-        conn.from_("amc_form").insert(data).execute()
+        response = conn.table("amc_form").insert([data]).execute()
+        if response:
+            st.success("Data inserted successfully.")
+        else:
+            st.error("Failed to insert data. Please try again.")
         df=pd.DataFrame(data)
         st.dataframe(df)
-
-        
     else:
-        images1 = []
-        if uploaded_file is not None:
-            st.write(uploaded_file)
-            current_datetime = dt.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-            filename = f"images/{current_datetime}_{uploaded_file.name}"
-            os.makedirs(os.path.dirname(filename), exist_ok=True)
-            with open(filename, "wb") as f:
-                f.write(uploaded_file.getvalue())
-            conn.storage.from_("images").upload(filename, filename)
-            url = conn.storage.from_("images").public_url(filename)
-            images1.append(url)
-            st.write(uploaded_file.name.split('.')[-1])
-            # os.remove(filename)
+        
         data = {
-            "client_name":[clientName],
-            "service":[amcfms],
-            "type_service":[type],
-            "total_amount":[totalAmt],
-            "s_date":[start],
-            "e_date":[end],
-            "billing":[billing],
+            "Client Name":[clientName],
+            "AMC/FMS":[amcfms],
+            "Type":[type],
+            "Total Amount":[totalAmt],
+            "s_date":[start.strftime('%Y-%m-%d')],
+            "e_date":[end.strftime('%Y-%m-%d')],
+            "Billing":[billing],
             "M1":[start],
             "M2":[(pd.to_datetime(start)+pd.DateOffset(months=1)).date()],
             "M3":[(pd.to_datetime(start)+pd.DateOffset(months=2)).date()],
@@ -573,9 +561,12 @@ if st.button("Save"):
             "M10":[(pd.to_datetime(start)+pd.DateOffset(months=9)).date()],
             "M11":[(pd.to_datetime(start)+pd.DateOffset(months=10)).date()],
             "M12":[(pd.to_datetime(start)+pd.DateOffset(months=11)).date()],
-            "note":[note],
-            "img_url" : [images1]
+            "Note":[note]
         }
-        conn.from_("amc_form").insert(data).execute()
+        response = conn.table("amc_form").insert([data]).execute()
+        if response:
+            st.success("Data inserted successfully.")
+        else:
+            st.error("Failed to insert data. Please try again.")
         df=pd.DataFrame(data)
         st.dataframe(df)
