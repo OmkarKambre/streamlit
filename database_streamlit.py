@@ -5,11 +5,7 @@ import os
 from st_supabase_connection import SupabaseConnection, execute_query
 
 st_supabase_client = st.connection(
-    name="conn",
-    type=SupabaseConnection,
-    ttl=None,
-    url="https://udxcimusmbsraiwwgppa.supabase.co",
-    key="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkeGNpbXVzbWJzcmFpd3dncHBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTk4MTc4NTIsImV4cCI6MjAzNTM5Mzg1Mn0.S1r-ynq7pKrUFqY68VVtbcH52p1hrJMOnqYoYT3_JCM", 
+    "supabase",SupabaseConnection
 )
 
     
@@ -443,7 +439,7 @@ if st.button("Save"):
         images = []
         if uploaded_file is not None:
             filename = "images/"+str(dt.datetime.now())+uploaded_file.__getattribute__("name")
-            st_supabase_client.upload("images", "local",uploaded_file , filename)
+            st_supabase_client.upload("po", "local",uploaded_file , filename)
             images.append(filename)
             st.write(uploaded_file.__getattribute__("name").split('.')[-1])
         
@@ -467,7 +463,7 @@ if st.button("Save"):
         images = []
         if uploaded_file is not None:
             filename = "images/"+str(dt.datetime.now())+uploaded_file.__getattribute__("name")
-            st_supabase_client.upload("images", "local",uploaded_file , filename)
+            st_supabase_client.upload("po", "local",uploaded_file , filename)
             images.append(filename)
             st.write(uploaded_file.__getattribute__("name").split('.')[-1])
         
@@ -495,7 +491,7 @@ if st.button("Save"):
         images = []
         if uploaded_file is not None:
             filename = "images/"+str(dt.datetime.now())+uploaded_file.__getattribute__("name")
-            st_supabase_client.upload("images", "local",uploaded_file , filename)
+            st_supabase_client.upload("po", "local",uploaded_file , filename)
             images.append(filename)
             st.write(uploaded_file.__getattribute__("name").split('.')[-1])
         data = {
@@ -526,7 +522,7 @@ if st.button("Save"):
         images = []
         if uploaded_file is not None:
             filename = "images/"+str(dt.datetime.now())+uploaded_file.__getattribute__("name")
-            st_supabase_client.upload("images", "local",uploaded_file , filename)
+            st_supabase_client.upload("po", "local",uploaded_file , filename)
             images.append(filename)
             st.write(uploaded_file.__getattribute__("name").split('.')[-1])
         data = {
@@ -555,3 +551,10 @@ if st.button("Save"):
         execute_query(st_supabase_client.table("amc_form").insert(data),ttl=0,)
         df=pd.DataFrame(data)
         st.dataframe(df)
+
+
+#1: db creation col(amcid, branch_name, loc, machine_type, model_name, model_no, serial_number(uid), specs, user, warranty_ends_on if ended curr date)
+
+#2: form creation selector->which company inventory (same name consider amc id), uploader -> .csv/excel, all cols are there or not, if save upload it to db
+
+#3: inventory downloader -> form page 
