@@ -1,0 +1,17 @@
+validation_rules:
+  - rule_name: LINUX_VERSION
+    version: SUSE_SP_12|SUSE_SP_13
+    platform: linux
+    command: cat /etc/os-version
+  - rule_name: TOMCAT_VERSION
+    version: TOMCAT_2024_SP_01
+    platform: linux
+    command: Version
+  - rule_name: ANDROID_VERSION
+    version: ANDROID_10|ANDROID_11
+    platform: android
+    command: getprop ro.build.version.release
+  - rule_name: WINDOWS_VERSION
+    version: WINDOWS_10|WINDOWS_11
+    platform: windows
+    command: (Get-WmiObject -Class Win32_OperatingSystem).Version
